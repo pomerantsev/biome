@@ -78,6 +78,41 @@ Starting trimmed-down:
 
 ---
 
+## Pre-RFC Tasks
+
+### 1. Verify alignment with Biome philosophy
+- [ ] Research Biome's stance on rules that require external configuration
+- [ ] Check if there are precedents for rules with complex options like `targets`
+- [ ] Understand how Biome handles rules that depend on project context (browserslist, tsconfig, etc.)
+- [ ] Look for any discussions/issues about browser compat rules in Biome
+
+### 2. Implement actual API usage detection
+Current prototype only checks variable binding names. Real rule needs to detect actual API usage:
+- [ ] Study how eslint-plugin-compat detects API usage
+- [ ] `fetch()` — direct function calls
+- [ ] `new PaymentRequest()` — constructor calls
+- [ ] `navigator.serviceWorker` — property access on known objects
+- [ ] `window.fetch` — property access with explicit global
+- [ ] Decide: do we need type information, or can we do this with AST only?
+
+### 3. Verify Renovate updates MDN data
+- [ ] Check if Renovate is configured to update all npm dependencies
+- [ ] If not, add `@mdn/browser-compat-data` to Renovate config
+
+### 4. Polyfill support
+Users shouldn't get warnings for APIs they've polyfilled.
+- [ ] Study how eslint-plugin-compat handles polyfills
+- [ ] Design config format for specifying polyfills
+- [ ] Decide: list of API names? Or list of polyfill packages that map to APIs?
+
+### 5. Other considerations
+- [ ] **Rule naming**: `noAbcd` is a placeholder. Consider: `noUnsupportedBrowserApi`, `useCompatibleApi`, etc.
+- [ ] **Error messages**: Should include which browsers don't support the API, maybe MDN links
+- [ ] **Performance**: With 1077 APIs, ensure lookup is efficient (current binary search should be fine)
+- [ ] **Scope of detection**: Start with global APIs only, or also detect prototype methods like `Array.prototype.includes`?
+
+---
+
 ## Open Questions
 
 (To be filled as we go)
