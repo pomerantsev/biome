@@ -1,0 +1,65 @@
+---
+source: crates/biome_js_analyze/tests/spec_tests.rs
+expression: invalid.js
+---
+# Input
+```js
+{ let abcd = 1; }
+{ const abcd = 2; }
+{ var abcd = 3; }
+
+```
+
+# Diagnostics
+```
+invalid.js:1:7 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Don't use abcd as a variable name.
+  
+  > 1 │ { let abcd = 1; }
+      │       ^^^^
+    2 │ { const abcd = 2; }
+    3 │ { var abcd = 3; }
+  
+  i This name is not descriptive enough.
+  
+  i This rule belongs to the nursery group, which means it is not yet stable and may change in the future. Visit https://biomejs.dev/linter/#nursery for more information.
+  
+
+```
+
+```
+invalid.js:2:9 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Don't use abcd as a variable name.
+  
+    1 │ { let abcd = 1; }
+  > 2 │ { const abcd = 2; }
+      │         ^^^^
+    3 │ { var abcd = 3; }
+    4 │ 
+  
+  i This name is not descriptive enough.
+  
+  i This rule belongs to the nursery group, which means it is not yet stable and may change in the future. Visit https://biomejs.dev/linter/#nursery for more information.
+  
+
+```
+
+```
+invalid.js:3:7 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  i Don't use abcd as a variable name.
+  
+    1 │ { let abcd = 1; }
+    2 │ { const abcd = 2; }
+  > 3 │ { var abcd = 3; }
+      │       ^^^^
+    4 │ 
+  
+  i This name is not descriptive enough.
+  
+  i This rule belongs to the nursery group, which means it is not yet stable and may change in the future. Visit https://biomejs.dev/linter/#nursery for more information.
+  
+
+```
