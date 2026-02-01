@@ -180,6 +180,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "biome_browser_compat_metadata"
+version = "0.0.1"
+dependencies = [
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "biome_cli"
 version = "0.0.0"
 dependencies = [
@@ -904,6 +912,7 @@ dependencies = [
  "biome_analyze_macros",
  "biome_aria",
  "biome_aria_metadata",
+ "biome_browser_compat_metadata",
  "biome_console",
  "biome_control_flow",
  "biome_deserialize",

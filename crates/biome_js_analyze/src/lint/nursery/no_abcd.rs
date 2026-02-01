@@ -6,31 +6,34 @@ use biome_js_syntax::JsIdentifierBinding;
 use biome_rowan::AstNode;
 use biome_rule_options::no_abcd::NoAbcdOptions;
 
+use biome_browser_compat_metadata::BROWSER_APIS;
+
 declare_lint_rule! {
-    /// Disallow `let` or `const` bindings named `abcd`.
+    /// Disallow variable bindings that shadow browser APIs.
     ///
-    /// This is a test rule created for learning purposes.
+    /// This rule flags any `let`, `const`, or `var` binding whose name
+    /// matches a browser API from the MDN compatibility data.
     ///
     /// ## Examples
     ///
     /// ### Invalid
     ///
     /// ```js,expect_diagnostic
-    /// let abcd = 1;
+    /// const fetch = () => {};
     /// ```
     ///
     /// ```js,expect_diagnostic
-    /// const abcd = 2;
+    /// let URL = "example";
     /// ```
     ///
     /// ### Valid
     ///
     /// ```js
-    /// let abc = 1;
+    /// const myFetch = () => {};
     /// ```
     ///
     /// ```js
-    /// const abcde = 2;
+    /// let myURL = "example";
     /// ```
     ///
     pub NoAbcd {
@@ -41,9 +44,13 @@ declare_lint_rule! {
     }
 }
 
+pub struct State {
+    api_name: Box<str>,
+}
+
 impl Rule for NoAbcd {
     type Query = Ast<JsIdentifierBinding>;
-    type State = ();
+    type State = State;
     type Signals = Option<Self::State>;
     type Options = NoAbcdOptions;
 
@@ -52,14 +59,16 @@ impl Rule for NoAbcd {
         let name = binding.name_token().ok()?;
         let name = name.text_trimmed();
 
-        if name == "abcd" {
-            Some(())
+        if BROWSER_APIS.contains(&name) {
+            Some(State {
+                api_name: name.into(),
+            })
         } else {
             None
         }
     }
 
-    fn diagnostic(ctx: &RuleContext<Self>, _state: &Self::State) -> Option<RuleDiagnostic> {
+    fn diagnostic(ctx: &RuleContext<Self>, state: &Self::State) -> Option<RuleDiagnostic> {
         let binding = ctx.query();
 
         Some(
@@ -67,11 +76,11 @@ impl Rule for NoAbcd {
                 rule_category!(),
                 binding.syntax().text_trimmed_range(),
                 markup! {
-                    "Don't use "<Emphasis>"abcd"</Emphasis>" as a variable name."
+                    "Don't shadow the browser API "<Emphasis>{&state.api_name}</Emphasis>"."
                 },
             )
             .note(markup! {
-                "This name is not descriptive enough."
+                "Shadowing browser APIs can lead to confusion and unexpected behavior."
             }),
         )
     }

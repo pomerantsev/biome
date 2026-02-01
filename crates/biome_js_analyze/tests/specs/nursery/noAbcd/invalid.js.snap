@@ -4,24 +4,24 @@ expression: invalid.js
 ---
 # Input
 ```js
-{ let abcd = 1; }
-{ const abcd = 2; }
-{ var abcd = 3; }
+{ const fetch = () => {}; }
+{ let URL = "example"; }
+{ var MutationObserver = null; }
 
 ```
 
 # Diagnostics
 ```
-invalid.js:1:7 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+invalid.js:1:9 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  i Don't use abcd as a variable name.
+  i Don't shadow the browser API fetch.
   
-  > 1 │ { let abcd = 1; }
-      │       ^^^^
-    2 │ { const abcd = 2; }
-    3 │ { var abcd = 3; }
+  > 1 │ { const fetch = () => {}; }
+      │         ^^^^^
+    2 │ { let URL = "example"; }
+    3 │ { var MutationObserver = null; }
   
-  i This name is not descriptive enough.
+  i Shadowing browser APIs can lead to confusion and unexpected behavior.
   
   i This rule belongs to the nursery group, which means it is not yet stable and may change in the future. Visit https://biomejs.dev/linter/#nursery for more information.
   
@@ -29,17 +29,17 @@ invalid.js:1:7 lint/nursery/noAbcd ━━━━━━━━━━━━━━━
 ```
 
 ```
-invalid.js:2:9 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+invalid.js:2:7 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  i Don't use abcd as a variable name.
+  i Don't shadow the browser API URL.
   
-    1 │ { let abcd = 1; }
-  > 2 │ { const abcd = 2; }
-      │         ^^^^
-    3 │ { var abcd = 3; }
+    1 │ { const fetch = () => {}; }
+  > 2 │ { let URL = "example"; }
+      │       ^^^
+    3 │ { var MutationObserver = null; }
     4 │ 
   
-  i This name is not descriptive enough.
+  i Shadowing browser APIs can lead to confusion and unexpected behavior.
   
   i This rule belongs to the nursery group, which means it is not yet stable and may change in the future. Visit https://biomejs.dev/linter/#nursery for more information.
   
@@ -49,15 +49,15 @@ invalid.js:2:9 lint/nursery/noAbcd ━━━━━━━━━━━━━━━
 ```
 invalid.js:3:7 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  i Don't use abcd as a variable name.
+  i Don't shadow the browser API MutationObserver.
   
-    1 │ { let abcd = 1; }
-    2 │ { const abcd = 2; }
-  > 3 │ { var abcd = 3; }
-      │       ^^^^
+    1 │ { const fetch = () => {}; }
+    2 │ { let URL = "example"; }
+  > 3 │ { var MutationObserver = null; }
+      │       ^^^^^^^^^^^^^^^^
     4 │ 
   
-  i This name is not descriptive enough.
+  i Shadowing browser APIs can lead to confusion and unexpected behavior.
   
   i This rule belongs to the nursery group, which means it is not yet stable and may change in the future. Visit https://biomejs.dev/linter/#nursery for more information.
   

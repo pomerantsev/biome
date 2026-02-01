@@ -5,8 +5,8 @@ expression: valid.js
 # Input
 ```js
 /* should not generate diagnostics */
-let abc = 1;
-const abcde = 2;
-let xyz = 3;
+const myFetch = () => {};
+let myURL = "example";
+var observer = new MutationObserver(() => {});
 
 ```

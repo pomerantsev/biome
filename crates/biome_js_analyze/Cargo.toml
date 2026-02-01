@@ -23,8 +23,9 @@ name    = "use_sorted_classes_parser"
 biome_analyze            = { workspace = true }
 biome_analyze_macros     = { workspace = true }
 biome_aria               = { workspace = true }
-biome_aria_metadata      = { workspace = true }
-biome_console            = { workspace = true }
+biome_aria_metadata           = { workspace = true }
+biome_browser_compat_metadata = { workspace = true }
+biome_console                 = { workspace = true }
 biome_control_flow       = { workspace = true }
 biome_deserialize        = { workspace = true, features = ["smallvec"] }
 biome_deserialize_macros = { workspace = true }

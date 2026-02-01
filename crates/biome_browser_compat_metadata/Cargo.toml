@@ -1,0 +1,21 @@
+[package]
+name                 = "biome_browser_compat_metadata"
+version              = "0.0.1"
+authors.workspace    = true
+edition.workspace    = true
+description          = "Browser API metadata from MDN browser-compat-data"
+homepage.workspace   = true
+repository.workspace = true
+license.workspace    = true
+keywords.workspace   = true
+categories.workspace = true
+publish              = false
+
+[dependencies]
+
+[build-dependencies]
+serde      = { workspace = true }
+serde_json = { workspace = true }
+
+[lints]
+workspace = true

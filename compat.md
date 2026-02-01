@@ -26,9 +26,9 @@ Decide if creating a browser compatibility rule in Biome is viable. Identify cha
 - [ ] Prototype: create a rule that reads a simple config value
 
 ### 4. Using external data in a rule
-- [ ] Study `biome_aria_metadata` crate (build.rs, generated code)
-- [ ] Understand how `UseValidAriaRole` uses this data
-- [ ] Prototype: embed a small dataset and query it from a rule
+- [x] Study `biome_aria_metadata` crate (build.rs, generated code)
+- [x] Understand how `UseValidAriaRole` uses this data
+- [x] Prototype: embed a small dataset and query it from a rule
 
 ---
 
@@ -117,3 +117,36 @@ Created `~/dev/playground/biome-examples/abcd-test/` to test the local Biome bui
 - `example.ts` — file with `abcd` variable
 - `biome.json` — enables `nursery/noAbcd`
 - `package.json` — `npm run lint` runs local cargo build
+
+### Using MDN compat data (external data prototype)
+
+Extended the `noAbcd` rule to check against real browser API names from `@mdn/browser-compat-data`. The rule now flags any variable that shadows a browser API (e.g., `const fetch = ...`).
+
+**New crate created:** `biome_browser_compat_metadata`
+
+Following the `biome_aria_metadata` pattern:
+- `build.rs` reads directly from `node_modules/@mdn/browser-compat-data/data.json`
+- Generates Rust code at compile time (not committed)
+- `lib.rs` uses `include!()` to embed the generated code
+
+**Files:**
+
+| File | Purpose |
+|------|---------|
+| `crates/biome_browser_compat_metadata/Cargo.toml` | Crate manifest with serde build-deps |
+| `crates/biome_browser_compat_metadata/build.rs` | Reads MDN JSON, generates `BROWSER_APIS` const |
+| `crates/biome_browser_compat_metadata/src/lib.rs` | Exports generated code |
+
+**Key pattern:**
+
+```
+node_modules/@mdn/browser-compat-data/data.json
+        ↓ (build.rs reads at compile time)
+    OUT_DIR/browser_apis.rs
+        ↓ (include!() in lib.rs)
+    pub const BROWSER_APIS: &[&str] = &[...];
+```
+
+**Updated rule:** `no_abcd.rs` now imports `biome_browser_compat_metadata::BROWSER_APIS` and checks if variable names are in this list (1077 browser APIs).
+
+**Dependency added:** `@mdn/browser-compat-data` as npm devDependency in root `package.json`. Renovate will auto-update it.
