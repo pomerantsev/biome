@@ -4,24 +4,30 @@ expression: invalid.js
 ---
 # Input
 ```js
-{ const fetch = () => {}; }
-{ let URL = "example"; }
-{ var MutationObserver = null; }
+// PaymentRequest was added in Chrome 60, not available in Chrome 50
+{ const PaymentRequest = {}; }
+
+// AbortController was added in Chrome 66, not available in Chrome 50
+{ let AbortController = null; }
+
+// IntersectionObserver was added in Chrome 51, not available in Chrome 50
+{ var IntersectionObserver = function() {}; }
 
 ```
 
 # Diagnostics
 ```
-invalid.js:1:9 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+invalid.js:2:9 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  i Don't shadow the browser API fetch.
+  i The PaymentRequest API is not available in: chrome 50.
   
-  > 1 │ { const fetch = () => {}; }
-      │         ^^^^^
-    2 │ { let URL = "example"; }
-    3 │ { var MutationObserver = null; }
+    1 │ // PaymentRequest was added in Chrome 60, not available in Chrome 50
+  > 2 │ { const PaymentRequest = {}; }
+      │         ^^^^^^^^^^^^^^
+    3 │ 
+    4 │ // AbortController was added in Chrome 66, not available in Chrome 50
   
-  i Shadowing browser APIs can lead to confusion and unexpected behavior.
+  i This API was added after the target browser version(s) you specified.
   
   i This rule belongs to the nursery group, which means it is not yet stable and may change in the future. Visit https://biomejs.dev/linter/#nursery for more information.
   
@@ -29,17 +35,17 @@ invalid.js:1:9 lint/nursery/noAbcd ━━━━━━━━━━━━━━━
 ```
 
 ```
-invalid.js:2:7 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+invalid.js:5:7 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  i Don't shadow the browser API URL.
+  i The AbortController API is not available in: chrome 50.
   
-    1 │ { const fetch = () => {}; }
-  > 2 │ { let URL = "example"; }
-      │       ^^^
-    3 │ { var MutationObserver = null; }
-    4 │ 
+    4 │ // AbortController was added in Chrome 66, not available in Chrome 50
+  > 5 │ { let AbortController = null; }
+      │       ^^^^^^^^^^^^^^^
+    6 │ 
+    7 │ // IntersectionObserver was added in Chrome 51, not available in Chrome 50
   
-  i Shadowing browser APIs can lead to confusion and unexpected behavior.
+  i This API was added after the target browser version(s) you specified.
   
   i This rule belongs to the nursery group, which means it is not yet stable and may change in the future. Visit https://biomejs.dev/linter/#nursery for more information.
   
@@ -47,17 +53,16 @@ invalid.js:2:7 lint/nursery/noAbcd ━━━━━━━━━━━━━━━
 ```
 
 ```
-invalid.js:3:7 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+invalid.js:8:7 lint/nursery/noAbcd ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  i Don't shadow the browser API MutationObserver.
+  i The IntersectionObserver API is not available in: chrome 50.
   
-    1 │ { const fetch = () => {}; }
-    2 │ { let URL = "example"; }
-  > 3 │ { var MutationObserver = null; }
-      │       ^^^^^^^^^^^^^^^^
-    4 │ 
+    7 │ // IntersectionObserver was added in Chrome 51, not available in Chrome 50
+  > 8 │ { var IntersectionObserver = function() {}; }
+      │       ^^^^^^^^^^^^^^^^^^^^
+    9 │ 
   
-  i Shadowing browser APIs can lead to confusion and unexpected behavior.
+  i This API was added after the target browser version(s) you specified.
   
   i This rule belongs to the nursery group, which means it is not yet stable and may change in the future. Visit https://biomejs.dev/linter/#nursery for more information.
   

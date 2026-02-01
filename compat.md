@@ -20,10 +20,20 @@ Decide if creating a browser compatibility rule in Biome is viable. Identify cha
 - [x] Create a minimal "hello world" rule
 - [x] Understand how rules are registered and enabled
 
-### 3. Adding external config to a rule
-- [ ] Understand how `NoUndeclaredDependencies` reads `package.json`
-- [ ] Understand the service-based architecture (`ServiceBag`, `FromServices`)
-- [ ] Prototype: create a rule that reads a simple config value
+### 3. Adding rule options for browser targets
+- [x] Update `build.rs` to generate richer data structure with browser support info
+  - Generate `BrowserSupport` struct with all 17 browsers as fields
+  - Generate `BROWSER_APIS: &[(&str, BrowserSupport)]` with version_added data
+  - Browser list generated dynamically from MDN data (future-proof)
+- [x] Define rule options format in `no_abcd.rs`
+  - `targets: HashMap<String, String>` for browser → version mapping
+  - Example: `{ "chrome": "50", "firefox": "45", "safari": "10.1" }`
+- [x] Implement version comparison logic
+  - Parse versions like "42", "10.1", handle `false` (not supported)
+  - Compare: target version vs. version_added
+- [x] Update rule logic
+  - Warn only if API's version_added > target version (API not available yet)
+  - Check against all specified target browsers
 
 ### 4. Using external data in a rule
 - [x] Study `biome_aria_metadata` crate (build.rs, generated code)
@@ -60,10 +70,10 @@ Starting trimmed-down:
 
 ## Prototype Plan
 
-- [ ] Build a working rule with all pieces integrated
-- [ ] Test against local JS/TS code
+- [x] Build a working rule with all pieces integrated
+- [x] Test against local JS/TS code
+- [x] Write tests following Biome's patterns
 - [ ] Write docs following Biome's patterns
-- [ ] Write tests following Biome's patterns
 - [ ] Evaluate: how much code? how well does it fit?
 
 ---
@@ -150,3 +160,58 @@ node_modules/@mdn/browser-compat-data/data.json
 **Updated rule:** `no_abcd.rs` now imports `biome_browser_compat_metadata::BROWSER_APIS` and checks if variable names are in this list (1077 browser APIs).
 
 **Dependency added:** `@mdn/browser-compat-data` as npm devDependency in root `package.json`. Renovate will auto-update it.
+
+### Browser version targeting (compat prototype)
+
+Extended the rule to check browser API availability against user-specified target versions. The rule now only reports APIs that are NOT available in the target browser versions.
+
+**Config format:**
+
+```json
+{
+  "linter": {
+    "rules": {
+      "nursery": {
+        "noAbcd": {
+          "level": "error",
+          "options": {
+            "targets": {
+              "chrome": "50",
+              "firefox": "45"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+**Updated data generation:** `build.rs` now generates:
+
+1. `BrowserSupport` struct with all 17 MDN browsers as fields (dynamically generated)
+2. `BROWSER_APIS: &[(&str, BrowserSupport)]` with version_added data for each API
+3. `BROWSER_NAMES: &[&str]` for validation
+4. Helper functions: `get_api_support()`, `get_version_added()`, `api_not_available()`
+
+**Version comparison:**
+
+- Parses versions like "42", "10.1", "10.1.2"
+- Compares numerically component by component
+- Handles `None` (API not supported in browser)
+- "10.0" == "10" (trailing zeros are equal)
+
+**Rule logic:**
+
+1. Check if variable name is a known browser API
+2. If no targets specified, don't report (opt-in behavior)
+3. For each target browser, check if API's version_added > target version
+4. Report only if API is unavailable in at least one target browser
+
+**Test results:**
+
+With `targets: { "chrome": "50" }`:
+- `PaymentRequest` (Chrome 60) → ❌ flagged
+- `AbortController` (Chrome 66) → ❌ flagged
+- `fetch` (Chrome 42) → ✅ not flagged
+- `MutationObserver` (Chrome 18) → ✅ not flagged

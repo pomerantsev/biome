@@ -1,0 +1,17 @@
+{
+	"$schema": "../../../../../../packages/@biomejs/biome/configuration_schema.json",
+	"linter": {
+		"rules": {
+			"nursery": {
+				"noAbcd": {
+					"level": "error",
+					"options": {
+						"targets": {
+							"chrome": "50"
+						}
+					}
+				}
+			}
+		}
+	}
+}
