@@ -81,10 +81,12 @@ Starting trimmed-down:
 ## Pre-RFC Tasks
 
 ### 1. Verify alignment with Biome philosophy
-- [ ] Research Biome's stance on rules that require external configuration
-- [ ] Check if there are precedents for rules with complex options like `targets`
-- [ ] Understand how Biome handles rules that depend on project context (browserslist, tsconfig, etc.)
-- [ ] Look for any discussions/issues about browser compat rules in Biome
+- [x] Research Biome's stance on rules that require external configuration
+- [x] Check if there are precedents for rules with complex options like `targets`
+- [x] Understand how Biome handles rules that depend on project context (browserslist, tsconfig, etc.)
+- [x] Look for any discussions/issues about browser compat rules in Biome
+
+**Result:** Aligned. No blockers identified.
 
 ### 2. Implement actual API usage detection
 Current prototype only checks variable binding names. Real rule needs to detect actual API usage:
@@ -115,7 +117,23 @@ Users shouldn't get warnings for APIs they've polyfilled.
 
 ## Open Questions
 
-(To be filled as we go)
+### Browsers vs. server runtimes
+Do we care about just browsers, or server runtimes too (Node.js, Deno, Bun)? MDN data includes all of these. Likely we want to support both, but need to consider:
+- Naming: "browser compat" vs. "runtime compat"?
+- Different use cases: a Node.js project doesn't care about Chrome support
+
+### Rule config format
+What's the exact config format? Need to test scenarios:
+- Single browser: `{ "chrome": "50" }`
+- Multiple browsers: `{ "chrome": "50", "firefox": "45", "safari": "10" }`
+- With polyfills: `{ "targets": { ... }, "polyfills": [ ... ] }`
+- Should we support browserslist strings? e.g., `"> 1%, not dead"`
+
+### Do we need caniuse-lite?
+eslint-plugin-compat uses both `@mdn/browser-compat-data` and `caniuse-lite`. Why?
+- [ ] Research what caniuse-lite provides that MDN doesn't
+- [ ] Is it legacy, or does it solve a real problem?
+- [ ] If needed, can we add it later without breaking changes?
 
 ---
 
